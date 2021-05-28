@@ -14,4 +14,4 @@ function readCSV(filename) {
   return records;
 }
 
-module.exports = { readCSV };
+module.exports = readCSV;
