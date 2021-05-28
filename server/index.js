@@ -15,7 +15,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-const { readCSV } = require("./utils/readCSV.js");
 const processData = require("./utils/processData.js");
 
 const app = express();
@@ -27,8 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const port = 3000;
 
 app.post("/upload", upload.single("zoomRecord"), (req, res) => {
-  const data = readCSV(`./uploads/${req.file.filename}`);
-  const summary = processData(data);
+  const summary = processData();
   res.send("file uploaded");
 });
 
