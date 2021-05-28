@@ -11,9 +11,13 @@
 <body>
   <div>
     <form>
-      <div>
-        <input type="file" id="userfile" name="zoomRecord">
-      </div>
+      <input type="file" id="zoomRecord" name="zoomRecord">
+      <input type="file" id="batchRecord" name="batchRecord">
+      <select name="recordCategory" id="recordCategory">
+        <option value="">Choose</option>
+        <option value="evaluation">Evaluation</option>
+        <option value="standup">Standup</option>
+      </select>
       <input type="submit" value="Submit!">
     </form>
   </div>
@@ -29,7 +33,6 @@
         .then(response => response.json())
         .then(result => console.log(result))
     })
-
   </script>
 </body>
 

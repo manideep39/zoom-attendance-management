@@ -5,8 +5,12 @@ const dsaStudentSegregation = {};
 const c1StudentSegregation = {};
 const c2StudentSegregation = {};
 
-function processData() {
+function generateSummary() {}
+
+function timeSlotStudentSegregation() {
   const data = readCSV(`../uploads/zoomRecord.csv`);
+  const mapping = readCSV(`../uploads/batchRecord.csv`);
+
   for (const record of data) {
     const studentId = getStudentId(record);
     if (studentId) {
@@ -52,7 +56,11 @@ function processData() {
     ...c2StudentSegregation,
   });
   if (isCorrect) {
-    console.log("Captured all the records");
+    return {
+      dsaStudentSegregation,
+      c1StudentSegregation,
+      c2StudentSegregation,
+    };
   }
 }
 
@@ -75,6 +83,7 @@ function checkUniqueEntryWithSegregatedData(data, combinedSegregatedData) {
   );
 }
 
+// exam time slots
 function createTimeSlots(record) {
   const joinTime = record["Join Time"];
   const leaveTime = record["Leave Time"];
@@ -170,6 +179,6 @@ function getStudentId(record) {
   }
 }
 
-processData();
+generateSummary();
 
-module.exports = processData;
+module.exports = generateSummary;
