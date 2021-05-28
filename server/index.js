@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-const processEvalData = require("./utils/processEvalData.js");
+const generateSummary = require("./utils/processEvalData.js");
 
 const app = express();
 
@@ -35,7 +35,7 @@ app.post(
     const { recordCategory } = req.body;
     switch (recordCategory) {
       case "evaluation":
-        // const summary = processEvalData();
+        // const summary = generateSummary();
         res.send();
         break;
       case "standup":

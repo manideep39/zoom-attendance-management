@@ -179,6 +179,4 @@ function getStudentId(record) {
   }
 }
 
-generateSummary();
-
 module.exports = generateSummary;
