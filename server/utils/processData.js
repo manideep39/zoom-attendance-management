@@ -1,11 +1,12 @@
 const readCSV = require("./readCSV.js");
 const removeFile = require("./removeFile.js");
 
+const dsaStudentSegregation = {};
+const c1StudentSegregation = {};
+const c2StudentSegregation = {};
+
 function processData() {
   const data = readCSV(`../uploads/zoomRecord.csv`);
-  const dsaStudentData = {};
-  const c1StudentData = {};
-  const c2StudentData = {};
   for (const record of data) {
     const studentId = getStudentId(record);
     if (studentId) {
@@ -15,8 +16,9 @@ function processData() {
           {
             const isValid = validateRecord(record, "DSA SLOT");
             if (isValid) {
-              if (!dsaStudentData[studentId]) dsaStudentData[studentId] = 1;
-              dsaStudentData[studentId]++;
+              if (!dsaStudentSegregation[studentId])
+                dsaStudentSegregation[studentId] = 1;
+              dsaStudentSegregation[studentId]++;
             }
           }
           break;
@@ -24,8 +26,9 @@ function processData() {
           {
             const isValid = validateRecord(record, "C1 SLOT");
             if (isValid) {
-              if (!c1StudentData[studentId]) c1StudentData[studentId] = 1;
-              c1StudentData[studentId]++;
+              if (!c1StudentSegregation[studentId])
+                c1StudentSegregation[studentId] = 1;
+              c1StudentSegregation[studentId]++;
             }
           }
           break;
@@ -33,8 +36,9 @@ function processData() {
           {
             const isValid = validateRecord(record, "C2 SLOT");
             if (isValid) {
-              if (!c2StudentData[studentId]) c2StudentData[studentId] = 1;
-              c2StudentData[studentId]++;
+              if (!c2StudentSegregation[studentId])
+                c2StudentSegregation[studentId] = 1;
+              c2StudentSegregation[studentId]++;
             }
           }
           break;
@@ -42,14 +46,36 @@ function processData() {
     }
   }
 
+  const isCorrect = checkUniqueEntryWithSegregatedData(data, {
+    ...dsaStudentSegregation,
+    ...c1StudentSegregation,
+    ...c2StudentSegregation,
+  });
+  if (isCorrect) {
+    console.log("Captured all the records");
+  }
+}
+
+// Testing
+function checkUniqueEntryWithSegregatedData(data, combinedSegregatedData) {
+  const uniqueStudentIds = {};
+  for (const record of data) {
+    const studentId = getStudentId(record);
+    if (studentId) {
+      if (!uniqueStudentIds[studentId]) uniqueStudentIds[studentId] = 1;
+    }
+  }
   console.log(
-    Object.keys(dsaStudentData).length,
-    Object.keys(c1StudentData).length,
-    Object.keys(c2StudentData).length
+    Object.keys(uniqueStudentIds).length,
+    Object.keys(combinedSegregatedData).length
+  );
+  return (
+    Object.keys(uniqueStudentIds).length ===
+    Object.keys(combinedSegregatedData).length
   );
 }
 
-function calculateTimeSlots(record) {
+function createTimeSlots(record) {
   const joinTime = record["Join Time"];
   const leaveTime = record["Leave Time"];
 
@@ -78,7 +104,7 @@ function calculateTimeSlots(record) {
 
 function findTimeSlot(record) {
   const { joinTime, dsaEndTime, c1EndTime, c2EndTime } =
-    calculateTimeSlots(record);
+    createTimeSlots(record);
 
   if (joinTime < dsaEndTime) {
     return "DSA SLOT";
@@ -99,7 +125,7 @@ function validateRecord(record, timeSlot) {
     dsaStartTime,
     c1StartTime,
     c2StartTime,
-  } = calculateTimeSlots(record);
+  } = createTimeSlots(record);
 
   // one minute === 60000 milliseconds
   const threshold = 60000 * 4;
