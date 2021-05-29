@@ -10,6 +10,7 @@
     table {
       border-collapse: collapse;
       text-align: center;
+      visibility: hidden;
     }
 
     table * {
@@ -17,7 +18,7 @@
       padding: 5px;
     }
 
-    #appContainer {
+    #topContainer {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -56,7 +57,7 @@
 </head>
 
 <body>
-  <div id="appContainer">
+  <div id="topContainer">
     <div id="formContainer">
       <h1 style="color: rgb(1, 1, 122)">Upload Files</h1>
       <form>
@@ -92,9 +93,14 @@
             <th>Present</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          <h5 style="color: red;" id="steps">Submit! files and then click on Generate Summary > </h4>
+        </tbody>
       </table>
     </div>
+  </div>
+  <div id="bottomCotainer">
+
   </div>
   <script>
     const form = document.querySelector('form');
@@ -113,11 +119,14 @@
     const summaryBtn = document.querySelector('#getSummary');
 
     summaryBtn.addEventListener('click', () => {
+      const evalData = JSON.parse(localStorage.getItem('evaluation'));
+      if (evalData) return;
       fetch('http://localhost:3000/getSummary', {
         method: "GET"
       })
         .then(response => response.json())
         .then(summary => storeDate(summary))
+        .then(() => showSummary())
     })
 
     function storeDate(summary) {
@@ -125,7 +134,19 @@
     }
 
     function showSummary() {
+      const steps = document.querySelector('#steps');
+      const table = document.querySelector('table');
       const evalData = JSON.parse(localStorage.getItem('evaluation'));
+
+      // show the steps message when eval data in localStorage is empty;
+      // show table when eval data is available;
+      if (evalData) {
+        steps.style.display = "none";
+        table.style.visibility = "visible";
+      }
+      // to avoid adding rows to existing body we are cleaning up before next click;
+      const tableBody = document.querySelector('table > tbody');
+      tableBody.innerHTML = '';
 
       const {["FT-AD-3"]: ft_ad_3, ["FT-WEB-10"]: ft_web_10, ["Ninjas II"]: ninjas_2, ["Samurai II"]: samurai_2, ["Spartans II"]: spartans_2} = evalData;
 
