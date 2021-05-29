@@ -22,11 +22,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 330px;
     }
 
     #formContainer {
       display: flex;
       flex-direction: column;
+      height: 300px;
     }
 
     #formContainer>form>input,
@@ -47,10 +49,10 @@
 
     #getSummary {
       width: 45%;
-      margin-bottom: 5px;
+      margin-bottom: 7px;
       color: rgb(0, 110, 0);
       font-size: 15px;
-      padding: 6px;
+      padding: 7px;
       font-weight: bold;
     }
   </style>
@@ -65,14 +67,16 @@
         <input type="file" id="zoomRecord" name="zoomRecord"></br>
         <label style="color: rgb(1, 1, 122)">Student Mapping:</label></br>
         <input type="file" id="batchRecord" name="batchRecord"></br>
+        <label style="color: rgb(1, 1, 122)">Data type:</label></br>
         <select name="recordCategory" id="recordCategory">
           <option value="">Choose type</option>
           <option value="evaluation">Evaluation</option>
           <option value="standup">Standup</option>
         </select></br>
-        <input style="color: rgb(0, 110, 0); padding: 5px 0px; width: 70%; font-size: 15px; font-weight: bold"
+        <input style="color: rgb(108, 128, 0); padding: 5px 0px; width: 70%; font-size: 15px; font-weight: bold"
           type="submit" value="Submit!">
       </form>
+      <p id="uploadStatus" style="margin: 0px; color: rgb(0, 151, 25); display: none;">Upload success!</p>
     </div>
     <div id="summaryTableContainer">
       <button id="getSummary">Generate Summary <span style="font-weight: lighter">></span> </button>
@@ -113,7 +117,13 @@
         body: formData
       })
         .then(response => response.json())
-        .then(result => console.log(result))
+        .then(result => {
+          const uploadStatus = document.querySelector('#uploadStatus');
+          uploadStatus.style.display = 'block';
+          setTimeout(() => {
+            uploadStatus.style.display = 'none';
+          }, 800)
+        }).catch(error => console.log(error))
     })
 
     const summaryBtn = document.querySelector('#getSummary');

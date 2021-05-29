@@ -35,7 +35,7 @@ app.post(
     const { recordCategory } = req.body;
     switch (recordCategory) {
       case "evaluation":
-        res.send("upload success");
+        res.send(JSON.stringify({ error: false }));
         break;
       case "standup":
         break;
