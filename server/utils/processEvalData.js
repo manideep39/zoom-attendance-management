@@ -2,26 +2,61 @@ const readCSV = require("./readCSV.js");
 const removeFile = require("./removeFile.js");
 
 function generateSummary() {
+  const flagThresholdForDSA = 3;
+  const flagThresholdForCoding = 4;
+
   const {
     dsaStudentSegregation: dsaData,
     c1StudentSegregation: c1Data,
     c2StudentSegregation: c2Data,
   } = timeSlotStudentSegregation(`../uploads/zoomRecord.csv`, true);
+
   const summary = studentsBatchSegregationWithTemplate(
     `../uploads/batchRecord.csv`,
     false
   );
-  console.log(summary);
+
+  [
+    [dsaData, "dsa"],
+    [c1Data, "c1"],
+    [c2Data, "c2"],
+  ].forEach((data) => {
+    for (const studentId in data[0]) {
+      for (const batch in summary) {
+        if (studentId in summary[batch]) {
+          const { dsa, c1, c2 } = summary[batch][studentId];
+          switch (data[1]) {
+            case "dsa":
+              dsa["attend"] = 1;
+              if (data[0][studentId] >= flagThresholdForDSA) dsa["flag"] = true;
+              break;
+            case "c1":
+              c1["attend"] = 1;
+              if (data[0][studentId] >= flagThresholdForCoding)
+                c1["flag"] = true;
+              break;
+            case "c2":
+              c2["attend"] = 1;
+              if (data[0][studentId] >= flagThresholdForCoding)
+                c2["flag"] = true;
+              break;
+          }
+          break;
+        }
+      }
+    }
+  });
+
+  return summary;
 }
 
 function studentsBatchSegregationWithTemplate(filename, cast) {
   const summary = {};
   const mapping = readCSV(filename, false);
-  console.log(mapping);
+
   for (const record of mapping) {
     const batchName = record["Batch"];
     const studentId = record["Student id"];
-    console.log(batchName, studentId);
     const studentDateTemplate = {
       [studentId]: {
         dsa: { attend: 0, flag: false },
@@ -29,6 +64,7 @@ function studentsBatchSegregationWithTemplate(filename, cast) {
         c2: { attend: 0, flag: false },
       },
     };
+
     if (!batchName in summary) {
       summary[batchName] = studentDateTemplate;
     } else {
@@ -38,6 +74,7 @@ function studentsBatchSegregationWithTemplate(filename, cast) {
       };
     }
   }
+
   return summary;
 }
 
@@ -215,5 +252,4 @@ function getStudentId(record) {
 }
 
 generateSummary();
-
 module.exports = generateSummary;

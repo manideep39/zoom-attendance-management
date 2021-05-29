@@ -35,14 +35,18 @@ app.post(
     const { recordCategory } = req.body;
     switch (recordCategory) {
       case "evaluation":
-        // const summary = generateSummary();
-        res.send();
+        res.send("upload success");
         break;
       case "standup":
         break;
     }
   }
 );
+
+app.get("/getSummary", (req, res) => {
+  const summary = generateSummary();
+  res.send(JSON.stringify(summary));
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

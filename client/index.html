@@ -21,6 +21,9 @@
       <input type="submit" value="Submit!">
     </form>
   </div>
+  <div>
+    <button id="getSummary">Generate Summary</button>
+  </div>
   <script>
     const form = document.querySelector('form');
     form.addEventListener('submit', (event) => {
@@ -32,6 +35,14 @@
       })
         .then(response => response.json())
         .then(result => console.log(result))
+    })
+    const summaryBtn = document.querySelector('#getSummary');
+    summaryBtn.addEventListener('click', () => {
+      fetch('http://localhost:3000/getSummary', {
+        method: "GET"
+      })
+        .then(response => response.json())
+        .then(summary => console.log(summary))
     })
   </script>
 </body>
