@@ -1,15 +1,52 @@
 const readCSV = require("./readCSV.js");
 const removeFile = require("./removeFile.js");
 
-const dsaStudentSegregation = {};
-const c1StudentSegregation = {};
-const c2StudentSegregation = {};
+function generateSummary() {
+  const {
+    dsaStudentSegregation: dsaData,
+    c1StudentSegregation: c1Data,
+    c2StudentSegregation: c2Data,
+  } = timeSlotStudentSegregation(`../uploads/zoomRecord.csv`, true);
+  const summary = studentsBatchSegregationWithTemplate(
+    `../uploads/batchRecord.csv`,
+    false
+  );
+  console.log(summary);
+}
 
-function generateSummary() {}
+function studentsBatchSegregationWithTemplate(filename, cast) {
+  const summary = {};
+  const mapping = readCSV(filename, false);
+  console.log(mapping);
+  for (const record of mapping) {
+    const batchName = record["Batch"];
+    const studentId = record["Student id"];
+    console.log(batchName, studentId);
+    const studentDateTemplate = {
+      [studentId]: {
+        dsa: { attend: 0, flag: false },
+        c1: { attend: 0, flag: false },
+        c2: { attend: 0, flag: false },
+      },
+    };
+    if (!batchName in summary) {
+      summary[batchName] = studentDateTemplate;
+    } else {
+      summary[batchName] = {
+        ...summary[batchName],
+        ...studentDateTemplate,
+      };
+    }
+  }
+  return summary;
+}
 
-function timeSlotStudentSegregation() {
-  const data = readCSV(`../uploads/zoomRecord.csv`);
-  const mapping = readCSV(`../uploads/batchRecord.csv`);
+function timeSlotStudentSegregation(filename, cast) {
+  const data = readCSV(filename, cast);
+
+  const dsaStudentSegregation = {};
+  const c1StudentSegregation = {};
+  const c2StudentSegregation = {};
 
   for (const record of data) {
     const studentId = getStudentId(record);
@@ -55,6 +92,7 @@ function timeSlotStudentSegregation() {
     ...c1StudentSegregation,
     ...c2StudentSegregation,
   });
+
   if (isCorrect) {
     return {
       dsaStudentSegregation,
@@ -73,10 +111,7 @@ function checkUniqueEntryWithSegregatedData(data, combinedSegregatedData) {
       if (!uniqueStudentIds[studentId]) uniqueStudentIds[studentId] = 1;
     }
   }
-  console.log(
-    Object.keys(uniqueStudentIds).length,
-    Object.keys(combinedSegregatedData).length
-  );
+
   return (
     Object.keys(uniqueStudentIds).length ===
     Object.keys(combinedSegregatedData).length
@@ -178,5 +213,7 @@ function getStudentId(record) {
     return studentId;
   }
 }
+
+generateSummary();
 
 module.exports = generateSummary;
