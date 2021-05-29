@@ -7,6 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attendance Management</title>
   <style>
+    * {
+      background-color: rgb(253, 249, 231);
+    }
+
     table {
       border-collapse: collapse;
       text-align: center;
@@ -87,6 +91,7 @@
             <th>E-type: Sprint</th>
             <th colspan="2">Coding</th>
             <th colspan="2">DSA</th>
+            <th colspan="2" style="background-color:rgb(255, 61, 61)">Red Flags</th>
           </tr>
           <tr>
             <th>Batch Name</th>
@@ -95,10 +100,12 @@
             <th>Present</th>
             <th>Absent</th>
             <th>Present</th>
+            <th style="background-color: rgb(255, 61, 61)">DSA</th>
+            <th style="background-color: rgb(255, 61, 61)">Coding</th>
           </tr>
         </thead>
         <tbody>
-          <h5 style="color: red;" id="steps">Submit! files and then click on Generate Summary > </h4>
+          <h5 style="color: rgb(255, 61, 61)" id="steps">Submit! files and then click on Generate Summary > </h4>
         </tbody>
       </table>
     </div>
@@ -107,6 +114,7 @@
 
   </div>
   <script>
+    showSummary();
     const form = document.querySelector('form');
 
     form.addEventListener('submit', (event) => {
@@ -164,7 +172,7 @@
         const table = document.querySelector('#evalSummaryTable tbody');
         const batchName = data[0];
         const totalStudents = Object.keys(data[1]).length;
-        const [codingPresent, dsaPresent] = findTotalPresent(data[1]);
+        const [codingPresent, dsaPresent, dsaFlag, codingFlag] = findTotalPresent(data[1]);
         const template = `<tr>
           <td>${batchName}</td>
           <td>${totalStudents}</td>
@@ -172,6 +180,8 @@
           <td>${codingPresent}</td>
           <td>${totalStudents - dsaPresent}</td>
           <td>${dsaPresent}</td>
+          <td>${dsaFlag}</td>
+          <td>${codingFlag}</td>
         </tr>`
         table.innerHTML += template;
       })
@@ -180,15 +190,17 @@
     function findTotalPresent(batchObject) {
       let codingTotal = 0;
       let dsaTotal = 0;
+      let redFlagDSATotal = 0;
+      let redFlagCodingTotal = 0;
       for (const studentId in batchObject) {
         const {dsa, c1, c2} = batchObject[studentId];
         dsaTotal += dsa["attend"]
         codingTotal += c1["attend"] || c2["attend"];
+        redFlagDSATotal += dsa["flag"]
+        redFlagCodingTotal += c1["flag"] || c2["flag"];
       }
-      return [codingTotal, dsaTotal];
+      return [codingTotal, dsaTotal, redFlagDSATotal, redFlagCodingTotal];
     }
-
-    showSummary();
   </script>
 </body>
 
