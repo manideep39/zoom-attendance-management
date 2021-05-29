@@ -6,10 +6,18 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attendance Management</title>
+  <style>
+    table * {
+      border: 1px solid black;
+      padding: 7px;
+      border-radius: 1px;
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
-  <div>
+  <div style="margin-top: 30px">
     <form>
       <input type="file" id="zoomRecord" name="zoomRecord">
       <input type="file" id="batchRecord" name="batchRecord">
@@ -21,11 +29,35 @@
       <input type="submit" value="Submit!">
     </form>
   </div>
-  <div>
+  <div style="margin: 50px 0px 20px 0px;">
     <button id="getSummary">Generate Summary</button>
+  </div>
+  <div>
+    <table id="evalSummaryTable">
+      <thead>
+        <tr>
+          <th>Week 21</th>
+          <th>E-type: Sprint</th>
+          <th colspan="2">Coding</th>
+          <th colspan="2">DSA</th>
+        </tr>
+        <tr>
+          <th>Batch Name</th>
+          <th>Total Students</th>
+          <th>Absent</th>
+          <th>Present</th>
+          <th>Absent</th>
+          <th>Present</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
   </div>
   <script>
     const form = document.querySelector('form');
+
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       const formData = new FormData(form);
@@ -36,14 +68,55 @@
         .then(response => response.json())
         .then(result => console.log(result))
     })
+
     const summaryBtn = document.querySelector('#getSummary');
+
     summaryBtn.addEventListener('click', () => {
       fetch('http://localhost:3000/getSummary', {
         method: "GET"
       })
         .then(response => response.json())
-        .then(summary => console.log(summary))
+        .then(summary => storeDate(summary))
     })
+
+    function storeDate(summary) {
+      localStorage.setItem('evaluation', JSON.stringify(summary));
+    }
+
+    function showSummary() {
+      const evalData = JSON.parse(localStorage.getItem('evaluation'));
+
+      const {["FT-AD-3"]: ft_ad_3, ["FT-WEB-10"]: ft_web_10, ["Ninjas II"]: ninjas_2, ["Samurai II"]: samurai_2, ["Spartans II"]: spartans_2} = evalData;
+
+      [["Spartans II", spartans_2], ["Samurai II", samurai_2], ["Ninjas II", ninjas_2], ["FT-AD-3", ft_ad_3], ["FT-WEB-10", ft_web_10]].forEach((data) => {
+        const table = document.querySelector('#evalSummaryTable tbody');
+        const batchName = data[0];
+        const totalStudents = Object.keys(data[1]).length;
+        const [codingPresent, dsaPresent] = findTotalPresent(data[1]);
+        const template = `<tr>
+          <td>${batchName}</td>
+          <td>${totalStudents}</td>
+          <td>${totalStudents - codingPresent}</td>
+          <td>${codingPresent}</td>
+          <td>${totalStudents - dsaPresent}</td>
+          <td>${dsaPresent}</td>
+        </tr>`
+        table.innerHTML += template;
+      })
+    }
+
+    function findTotalPresent(batchObject) {
+      let codingTotal = 0;
+      let dsaTotal = 0;
+      for (const studentId in batchObject) {
+        const {dsa, c1, c2} = batchObject[studentId];
+        dsaTotal += dsa["attend"]
+        codingTotal += c1["attend"] || c2["attend"];
+      }
+      return [codingTotal, dsaTotal];
+    }
+
+    showSummary();
   </script>
 </body>
 
