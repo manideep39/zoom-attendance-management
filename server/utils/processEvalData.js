@@ -1,5 +1,6 @@
 const readCSV = require("./readCSV.js");
 const removeFile = require("./removeFile.js");
+const path = require("path");
 
 function generateSummary() {
   const flagThresholdForDSA = 3;
@@ -9,10 +10,13 @@ function generateSummary() {
     dsaStudentSegregation: dsaData,
     c1StudentSegregation: c1Data,
     c2StudentSegregation: c2Data,
-  } = timeSlotStudentSegregation(`../uploads/zoomRecord.csv`, true);
+  } = timeSlotStudentSegregation(
+    path.join(__dirname, "../uploads/zoomRecord.csv"),
+    true
+  );
 
   const summary = studentsBatchSegregationWithTemplate(
-    `../uploads/batchRecord.csv`,
+    path.join(__dirname, "../uploads/batchRecord.csv"),
     false
   );
 
