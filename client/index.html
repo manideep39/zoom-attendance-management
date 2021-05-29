@@ -7,53 +7,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attendance Management</title>
   <style>
-    table * {
-      border: 1px solid black;
-      padding: 7px;
-      border-radius: 1px;
+    table {
+      border-collapse: collapse;
       text-align: center;
+    }
+
+    table * {
+      border: 2px solid black;
+      padding: 5px;
+    }
+
+    #appContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #formContainer {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #formContainer>form>input,
+    select {
+      margin-bottom: 10px;
+      margin-top: 5px;
+    }
+
+    th {
+      background-color: orange;
+    }
+
+    #summaryTableContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: center
+    }
+
+    #getSummary {
+      width: 45%;
+      margin-bottom: 5px;
+      color: rgb(0, 110, 0);
+      font-size: 15px;
+      padding: 6px;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
-  <div style="margin-top: 30px">
-    <form>
-      <input type="file" id="zoomRecord" name="zoomRecord">
-      <input type="file" id="batchRecord" name="batchRecord">
-      <select name="recordCategory" id="recordCategory">
-        <option value="">Choose</option>
-        <option value="evaluation">Evaluation</option>
-        <option value="standup">Standup</option>
-      </select>
-      <input type="submit" value="Submit!">
-    </form>
-  </div>
-  <div style="margin: 50px 0px 20px 0px;">
-    <button id="getSummary">Generate Summary</button>
-  </div>
-  <div>
-    <table id="evalSummaryTable">
-      <thead>
-        <tr>
-          <th>Week 21</th>
-          <th>E-type: Sprint</th>
-          <th colspan="2">Coding</th>
-          <th colspan="2">DSA</th>
-        </tr>
-        <tr>
-          <th>Batch Name</th>
-          <th>Total Students</th>
-          <th>Absent</th>
-          <th>Present</th>
-          <th>Absent</th>
-          <th>Present</th>
-        </tr>
-      </thead>
-      <tbody>
-
-      </tbody>
-    </table>
+  <div id="appContainer">
+    <div id="formContainer">
+      <h1 style="color: rgb(1, 1, 122)">Upload Files</h1>
+      <form>
+        <label style="color: rgb(1, 1, 122)">Zoom Record:</label></br>
+        <input type="file" id="zoomRecord" name="zoomRecord"></br>
+        <label style="color: rgb(1, 1, 122)">Student Mapping:</label></br>
+        <input type="file" id="batchRecord" name="batchRecord"></br>
+        <select name="recordCategory" id="recordCategory">
+          <option value="">Choose type</option>
+          <option value="evaluation">Evaluation</option>
+          <option value="standup">Standup</option>
+        </select></br>
+        <input style="color: rgb(0, 110, 0); padding: 5px 0px; width: 70%; font-size: 15px; font-weight: bold"
+          type="submit" value="Submit!">
+      </form>
+    </div>
+    <div id="summaryTableContainer">
+      <button id="getSummary">Generate Summary <span style="font-weight: lighter">></span> </button>
+      <table id="evalSummaryTable">
+        <thead>
+          <tr>
+            <th>Week 21</th>
+            <th>E-type: Sprint</th>
+            <th colspan="2">Coding</th>
+            <th colspan="2">DSA</th>
+          </tr>
+          <tr>
+            <th>Batch Name</th>
+            <th>Total Students</th>
+            <th>Absent</th>
+            <th>Present</th>
+            <th>Absent</th>
+            <th>Present</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
   <script>
     const form = document.querySelector('form');
