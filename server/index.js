@@ -43,7 +43,7 @@ app.post(
   }
 );
 
-app.get("/api/getSummary", (req, res) => {
+app.get("/getSummary", (req, res) => {
   const summary = generateSummary();
   res.send(JSON.stringify(summary));
 });
