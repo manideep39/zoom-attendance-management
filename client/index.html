@@ -8,7 +8,7 @@
   <title>Attendance Management</title>
   <style>
     * {
-      font-weight: 400;
+      font-weight: normal;
       font-family: medium-content-sans-serif-font, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
       ;
     }
@@ -21,7 +21,7 @@
     }
 
     table * {
-      border: 2px solid black;
+      border: 1px solid black;
       padding: 5px;
     }
 
@@ -42,12 +42,11 @@
     #formContainer>form>input,
     select {
       margin-bottom: 10px;
-      margin-top: 6px;
+      margin-top: 5px;
     }
 
     th {
-      background-color: orange;
-      font-weight: 500;
+      background-color: rgb(255, 229, 182);
     }
 
     td {
@@ -66,7 +65,6 @@
       color: rgb(0, 110, 0);
       font-size: 15px;
       padding: 7px;
-      font-weight: bold;
     }
 
     #studentListContainer {
@@ -80,11 +78,10 @@
       border: 1px solid gray;
       width: 80px;
       color: rgba(117, 117, 117, 1);
-      font-weight: 400;
       font-size: 13px;
       font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
       text-align: center;
-      font-weight: bold;
+      font-weight: normal;
       margin: 2px;
       padding: 5px;
     }
@@ -104,10 +101,8 @@
         <select name="recordCategory" id="recordCategory">
           <option value="">Choose type</option>
           <option value="evaluation">Evaluation</option>
-          <option value="standup">Standup</option>
         </select></br>
-        <input
-          style="color: rgb(108, 128, 0); padding: 5px 0px; width: 70%; font-size: 15px; font-weight: bold; margin-top: 7px;"
+        <input style="color: rgb(108, 128, 0); padding: 5px 0px; width: 70%; font-size: 15px; margin-top: 7px;"
           type="submit" value="Submit!">
       </form>
       <p id="uploadStatus" style="margin: 0px; color: rgb(0, 151, 25); display: none;">Upload success!</p>
@@ -121,7 +116,7 @@
             <th>E-type: Sprint</th>
             <th colspan="2">Coding</th>
             <th colspan="2">DSA</th>
-            <th colspan="2" style="background-color:rgb(255, 61, 61)">Red Flags</th>
+            <th colspan="2" style="background-color:rgb(255, 170, 170)">Red Flags</th>
           </tr>
           <tr>
             <th>Batch Name</th>
@@ -130,8 +125,8 @@
             <th>Present</th>
             <th>Absent</th>
             <th>Present</th>
-            <th style="background-color: rgb(255, 61, 61)">DSA</th>
-            <th style="background-color: rgb(255, 61, 61)">Coding</th>
+            <th style="background-color: rgb(255, 170, 170)">DSA</th>
+            <th style="background-color: rgb(255, 170, 170)">Coding</th>
           </tr>
         </thead>
         <tbody>
@@ -142,7 +137,13 @@
   </div>
 
   <div id="bottomContainer">
-    <h2 style="text-align: center; display: none; margin: 0; color: rgb(1, 1, 122)">Student List</h2>
+    <div style="display: flex; align-items: center; justify-content: center">
+      <h2 style="text-align: center; margin: 0; color: rgb(1, 1, 122); display: none; margin-right: 20px;">
+        Student List
+      </h2>
+      <input type="text" placeholder="Search student id" id="searchStudentList"
+        style="padding: 3px 0px; display: none; text-align: center;">
+    </div>
     <div id="studentListContainer">
     </div>
   </div>
@@ -225,10 +226,12 @@
 
     function showList(event) {
       const bottomContainer = document.querySelector('#studentListContainer');
-      const heading = document.querySelector('#bottomContainer > h2');
-      heading.style.display = 'block';
+      const heading = document.querySelector('#bottomContainer > div > h2');
+      const input = document.querySelector('#bottomContainer > div > input');
+      heading.style.display = 'inline';
+      input.style.display = 'block';
       bottomContainer.innerHTML = '';
-      const studentIds = studentList[event.target.id].map(studentId => {
+      const studentIds = studentList[event.target.id].sort().map(studentId => {
         return `<div class="studentId">${studentId}</div>`
       }).join('')
       bottomContainer.innerHTML = studentIds;
