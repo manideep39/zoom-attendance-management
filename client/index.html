@@ -50,6 +50,10 @@
     }
 
     td {
+      color: rgb(75, 75, 75);
+    }
+
+    td {
       cursor: pointer;
     }
 
@@ -130,7 +134,7 @@
           </tr>
         </thead>
         <tbody>
-          <h5 style="color: rgb(255, 61, 61)" id="steps">Submit! files and then click on Generate Summary > </h4>
+          <h5 style="color: rgb(255, 61, 61)" id="steps">Submit! files and then click on Generate Summary.</h4>
         </tbody>
       </table>
     </div>
@@ -141,7 +145,7 @@
       <h2 style="text-align: center; margin: 0; color: rgb(1, 1, 122); display: none; margin-right: 20px;">
         Student List
       </h2>
-      <input type="text" placeholder="Search student id" id="searchStudentList"
+      <input type="text" placeholder="Search student id" id="searchStudentList" onkeyup="searchStudentId(event)"
         style="padding: 3px 0px; display: none; text-align: center;">
     </div>
     <div id="studentListContainer">
@@ -151,6 +155,11 @@
     const studentList = {}
     showSummary();
     const form = document.querySelector('form');
+    function searchStudentId(event) {
+      const searchValue = event.target.value;
+      const studentId = document.querySelector(`#${searchValue}`);
+      if (studentId) studentId.style.color = 'red';
+    }
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
@@ -211,7 +220,7 @@
         const totalStudents = Object.keys(data[1]).length;
         const [codingPresent, dsaPresent, dsaFlag, codingFlag] = findTotalPresent(data[1], data[2]);
         const template = `<tr>
-          <td style="cursor: default">${batchName}</td>
+          <td style="cursor: default; color: black;">${batchName}</td>
           <td id=${data[2]}_t onclick="showList(event)">${totalStudents}</td>
           <td id=${data[2]}_ca onclick="showList(event)">${totalStudents - codingPresent}</td>
           <td id=${data[2]}_cp onclick="showList(event)">${codingPresent}</td>
@@ -230,12 +239,15 @@
       const input = document.querySelector('#bottomContainer > div > input');
       heading.style.display = 'inline';
       input.style.display = 'block';
+      input.value = '';
       bottomContainer.innerHTML = '';
       const studentIds = studentList[event.target.id].sort().map(studentId => {
-        return `<div class="studentId">${studentId}</div>`
+        return `<div class="studentId" id=${studentId}>${studentId}</div>`
       }).join('')
       bottomContainer.innerHTML = studentIds;
     }
+
+
 
     function findTotalPresent(batchObject, batchCode) {
       let codingTotal = 0;
