@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const port = 3000;
 
 app.post(
-  "/upload",
+  "/api/upload",
   upload.fields([
     { name: "zoomRecord", maxCount: 1 },
     { name: "batchRecord", maxCount: 1 },
@@ -43,7 +43,7 @@ app.post(
   }
 );
 
-app.get("/getSummary", (req, res) => {
+app.get("/api/getSummary", (req, res) => {
   const summary = generateSummary();
   res.send(JSON.stringify(summary));
 });
