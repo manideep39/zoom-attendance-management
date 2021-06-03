@@ -15,7 +15,7 @@ function searchStudentId(event) {
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   const formData = new FormData(form);
-  fetch("http://localhost:3000/api/upload", {
+  fetch("https://zoom-attendance-management.herokuapp.com/api/upload", {
     method: "POST",
     body: formData,
   })
@@ -34,7 +34,7 @@ form.addEventListener("submit", (event) => {
 summaryBtn.addEventListener("click", () => {
   const evalData = JSON.parse(localStorage.getItem("evaluation"));
   if (evalData) return;
-  fetch("http://localhost:3000/api/getSummary", {
+  fetch("https://zoom-attendance-management.herokuapp.com/api/getSummary", {
     method: "GET",
   })
     .then((response) => response.json())
