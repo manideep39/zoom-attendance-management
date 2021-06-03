@@ -40,8 +40,12 @@ app.post(
 );
 
 app.get("/api/getSummary", (req, res) => {
-  const summary = generateSummary(res);
-  res.send(JSON.stringify(summary));
+  const { error, summary } = generateSummary(res);
+  if (error) {
+    res.status(404).end();
+  } else {
+    res.json(summary);
+  }
 });
 
 app.listen(process.env.PORT, () => {

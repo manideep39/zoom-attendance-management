@@ -1,22 +1,24 @@
-const readCSV = require("./readCSV.js");
-const removeFile = require("./removeFile.js");
+const { readCSV, doFilesExists } = require("./readCSV.js");
 const path = require("path");
 
 function generateSummary() {
   const flagThresholdForDSA = 3;
   const flagThresholdForCoding = 4;
+  const zoomRecordFilePath = path.join(__dirname, "../uploads/zoomRecord.csv");
+  const batchMappingRecord = path.join(__dirname, "../uploads/batchRecord.csv");
+
+  if (!doFilesExists(zoomRecordFilePath, batchMappingRecord)) {
+    return { error: true, summary: {} };
+  }
 
   const {
     dsaStudentSegregation: dsaData,
     c1StudentSegregation: c1Data,
     c2StudentSegregation: c2Data,
-  } = timeSlotStudentSegregation(
-    path.join(__dirname, "../uploads/zoomRecord.csv"),
-    true
-  );
+  } = timeSlotStudentSegregation(zoomRecordFilePath, true);
 
   const summary = studentsBatchSegregationWithTemplate(
-    path.join(__dirname, "../uploads/batchRecord.csv"),
+    batchMappingRecord,
     false
   );
 
@@ -51,7 +53,7 @@ function generateSummary() {
     }
   });
 
-  return summary;
+  return { summary, errors: false };
 }
 
 function studentsBatchSegregationWithTemplate(filename, cast) {
